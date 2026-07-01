@@ -717,9 +717,10 @@ function parseProgram(text) {
     const block = text.slice(start, stop);
     const dateMatch = block.match(DATE_RE);
     let aciklama = '', icerik = '';
-    if (dateMatch) {
+ if (dateMatch) {
       aciklama = block.slice(0, dateMatch.index).trim();
       icerik = block.slice(dateMatch.index + dateMatch[0].length).trim();
+      icerik = icerik.replace(/^[^a-zA-ZçğıöşüÇĞİÖŞÜ]+/, '');
     } else {
       aciklama = block.trim();
       icerik = '';
