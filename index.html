@@ -268,7 +268,8 @@
 
   <div class="layout">
     <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar">
+  <div class="sidebar" id="sidebar">
+      <div class="sec-item active" data-sec="0">🏠 Form</div>
       <div class="sec-item" data-sec="1"><span class="dot red" id="dot-1"></span>Tur Detayı</div>
       <div class="sec-item disabled" data-sec="2"><span class="dot gray"></span>Tarihler</div>
       <div class="sec-item" data-sec="3"><span class="dot red" id="dot-3"></span>Dahil - Hariç</div>
@@ -284,8 +285,9 @@
       <div class="top-actions">
         <button class="reset-btn" id="resetBtn">↺ Sıfırla</button>
       </div>
-
-      <!-- FORM -->
+     
+<!-- FORM -->
+      <div class="panel active" id="panel-0">
       <div class="card">
         <div class="form-field">
           <label for="titleInput">Tur Başlığı Metni</label>
@@ -303,14 +305,15 @@
           <label for="dahilVarInput">Fiyata Dahil</label>
           <textarea id="dahilVarInput" placeholder="Fiyata dahil olan maddeleri her satıra bir madde olacak şekilde yapıştır..." style="min-height:100px;"></textarea>
         </div>
-        <div class="form-field" style="margin-bottom:0;">
+     <div class="form-field" style="margin-bottom:0;">
           <label for="dahilYokInput">Fiyata Dahil Değil</label>
           <textarea id="dahilYokInput" placeholder="Fiyata dahil olmayan maddeleri her satıra bir madde olacak şekilde yapıştır..." style="min-height:100px;"></textarea>
         </div>
       </div>
+      </div>
 
       <!-- PANEL 1: TUR DETAYI -->
-      <div class="panel active" id="panel-1">
+      <div class="panel" id="panel-1">
         <div class="card">
           <h3>1. Tur Detayı</h3>
           <div class="btn-row">
@@ -509,9 +512,9 @@ let unsubscribeAdmin = null;
 let adminMode = false;
 let adminTexts = {}; // key -> text
 let adminEditingKey = null;
-let activeSection = '1';
+let activeSection = '0';
 
-const ACTIVE_SECTIONS = ['1', '3', '4'];
+const ACTIVE_SECTIONS = ['0', '1', '3', '4'];
 
 // Umre / Dahil-Hariç buton tanımları
 const UMRE_GIDIS_KEYS = [
@@ -937,11 +940,11 @@ resetBtn.addEventListener('click', () => {
   dahilYokInput.value = '';
   updateAll();
   // ilk bölüme dön
-  activeSection = '1';
+activeSection = '0';
   sidebar.querySelectorAll('.sec-item').forEach(i => i.classList.remove('active'));
-  sidebar.querySelector('[data-sec="1"]').classList.add('active');
+  sidebar.querySelector('[data-sec="0"]').classList.add('active');
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-1').classList.add('active');
+  document.getElementById('panel-0').classList.add('active');
 });
 
 // ==================== FIRESTORE: NOTLAR ====================
