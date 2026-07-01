@@ -299,9 +299,13 @@
           <label for="lastDayExtraInput">Son Gün Ek Metni (opsiyonel)</label>
           <textarea id="lastDayExtraInput" placeholder="Son günün içeriğinin altına eklenecek metin..."></textarea>
         </div>
+       <div class="form-field">
+          <label for="dahilVarInput">Fiyata Dahil</label>
+          <textarea id="dahilVarInput" placeholder="Fiyata dahil olan maddeleri her satıra bir madde olacak şekilde yapıştır..." style="min-height:100px;"></textarea>
+        </div>
         <div class="form-field" style="margin-bottom:0;">
-          <label for="dahilInput">Dahil / Dahil Değil</label>
-          <textarea id="dahilInput" placeholder="İçinde (Dahil) ve (Dahil Değil) başlıkları olan metni yapıştır..." style="min-height:140px;"></textarea>
+          <label for="dahilYokInput">Fiyata Dahil Değil</label>
+          <textarea id="dahilYokInput" placeholder="Fiyata dahil olmayan maddeleri her satıra bir madde olacak şekilde yapıştır..." style="min-height:100px;"></textarea>
         </div>
       </div>
 
@@ -458,7 +462,8 @@ const resetBtn = document.getElementById('resetBtn');
 const titleInput = document.getElementById('titleInput');
 const programInput = document.getElementById('programInput');
 const lastDayExtraInput = document.getElementById('lastDayExtraInput');
-const dahilInput = document.getElementById('dahilInput');
+const dahilVarInput = document.getElementById('dahilVarInput');
+const dahilYokInput = document.getElementById('dahilYokInput');
 
 const btnTurBasligi = document.getElementById('btnTurBasligi');
 const btnUlasim = document.getElementById('btnUlasim');
@@ -725,51 +730,29 @@ function parseProgram(text) {
 }
 
 // ==================== DAHIL / DAHIL DEĞİL AYRIŞTIRMA ====================
-function parseDahilHaric(text) {
-  const result = { dahilFound: false, dahilDegilFound: false, dahilHtml: '', dahilPlain: '', dahilDegilHtml: '', dahilDegilPlain: '' };
-  if (!text.trim()) return result;
-  const lines = text.split(/\n/);
-  let dahilStart = -1, dahilDegilStart = -1;
-  lines.forEach((line, idx) => {
-    const low = line.toLocaleLowerCase('tr-TR');
-    if (dahilDegilStart === -1 && /dahil\s*değil/.test(low)) dahilDegilStart = idx;
-  });
-  lines.forEach((line, idx) => {
-    const low = line.toLocaleLowerCase('tr-TR');
-    if (dahilStart === -1 && /\bdahil\b/.test(low) && !/dahil\s*değil/.test(low)) dahilStart = idx;
-  });
+function parseDahilVar(text) {
+  if (!text.trim()) return { found: false, html: '', plain: '' };
+  const items = text.split(/\n/)
+    .map(l => l.replace(/^[-•*\u2022]\s*/, '').trim())
+    .filter(Boolean);
+  if (!items.length) return { found: false, html: '', plain: '' };
+  const plain = items.map(i => '• ' + i).join('\n');
+  const html = '<ul>' + items.map(i => `<li>${escHtml(i)}</li>`).join('') + '</ul>';
+  return { found: true, html, plain };
+}
 
-  function collect(startIdx, stopIdx) {
-    const items = [];
-    for (let i = startIdx + 1; i < stopIdx; i++) {
-      const t = lines[i].replace(/^[-•*\u2022]\s*/, '').trim();
-      if (t) items.push(t);
-    }
-    return items;
-  }
-
-  if (dahilStart !== -1) {
-    const stop = (dahilDegilStart !== -1 && dahilDegilStart > dahilStart) ? dahilDegilStart : lines.length;
-    const items = collect(dahilStart, stop);
-    if (items.length) {
-      result.dahilFound = true;
-      result.dahilPlain = items.map(i => '• ' + i).join('\n');
-      result.dahilHtml = '<ul>' + items.map(i => `<li>${escHtml(i)}</li>`).join('') + '</ul>';
-    }
-  }
-  if (dahilDegilStart !== -1) {
-    const stop = (dahilStart !== -1 && dahilStart > dahilDegilStart) ? dahilStart : lines.length;
-    const items = collect(dahilDegilStart, stop);
-    if (items.length) {
-      result.dahilDegilFound = true;
-      result.dahilDegilPlain = items.map(i => (/zorunlu/i.test(i) ? '• ' + i.toUpperCase() : '• ' + i)).join('\n');
-      result.dahilDegilHtml = '<ul>' + items.map(i => {
-        const esc = escHtml(i);
-        return /zorunlu/i.test(i) ? `<li><b>${esc}</b></li>` : `<li>${esc}</li>`;
-      }).join('') + '</ul>';
-    }
-  }
-  return result;
+function parseDahilYok(text) {
+  if (!text.trim()) return { found: false, html: '', plain: '' };
+  const items = text.split(/\n/)
+    .map(l => l.replace(/^[-•*\u2022]\s*/, '').trim())
+    .filter(Boolean);
+  if (!items.length) return { found: false, html: '', plain: '' };
+  const plain = items.map(i => (/zorunlu/i.test(i) ? '• ' + i.toUpperCase() : '• ' + i)).join('\n');
+  const html = '<ul>' + items.map(i => {
+    const esc = escHtml(i);
+    return /zorunlu/i.test(i) ? `<li><b>${esc}</b></li>` : `<li>${esc}</li>`;
+  }).join('') + '</ul>';
+  return { found: true, html, plain };
 }
 
 function escHtml(str) {
@@ -893,10 +876,11 @@ function computeStatuses() {
   else if (!airline) setDot('1', 'orange');
   else setDot('1', 'green');
 
-  // Bölüm 3
-  const dh = parseDahilHaric(dahilInput.value);
-  if (!dh.dahilFound && !dh.dahilDegilFound) setDot('3', 'red');
-  else if (dh.dahilFound && dh.dahilDegilFound) setDot('3', 'green');
+// Bölüm 3
+  const dahilVarSonuc = parseDahilVar(dahilVarInput.value);
+  const dahilYokSonuc = parseDahilYok(dahilYokInput.value);
+  if (!dahilVarSonuc.found && !dahilYokSonuc.found) setDot('3', 'red');
+  else if (dahilVarSonuc.found && dahilYokSonuc.found) setDot('3', 'green');
   else setDot('3', 'orange');
 
   // Bölüm 4
@@ -918,7 +902,8 @@ function updateAll() {
 titleInput.addEventListener('input', updateAll);
 programInput.addEventListener('input', updateAll);
 lastDayExtraInput.addEventListener('input', updateAll);
-dahilInput.addEventListener('input', updateAll);
+dahilVarInput.addEventListener('input', updateAll);
+dahilYokInput.addEventListener('input', updateAll);
 
 // ---- Tur Başlığı / Ulaşım kopyalama ----
 btnTurBasligi.addEventListener('click', () => {
@@ -933,14 +918,14 @@ btnUlasim.addEventListener('click', () => {
 
 // ---- Dahil / Dahil Değil kopyalama ----
 btnDahil.addEventListener('click', () => {
-  const dh = parseDahilHaric(dahilInput.value);
-  if (!dh.dahilFound) { alert('"Dahil" bölümü bulunamadı.'); return; }
-  copyRich(dh.dahilHtml, dh.dahilPlain, btnDahil);
+  const sonuc = parseDahilVar(dahilVarInput.value);
+  if (!sonuc.found) { alert('"Fiyata Dahil" kutusu boş.'); return; }
+  copyRich(sonuc.html, sonuc.plain, btnDahil);
 });
 btnDahilDegil.addEventListener('click', () => {
-  const dh = parseDahilHaric(dahilInput.value);
-  if (!dh.dahilDegilFound) { alert('"Dahil Değil" bölümü bulunamadı.'); return; }
-  copyRich(dh.dahilDegilHtml, dh.dahilDegilPlain, btnDahilDegil);
+  const sonuc = parseDahilYok(dahilYokInput.value);
+  if (!sonuc.found) { alert('"Fiyata Dahil Değil" kutusu boş.'); return; }
+  copyRich(sonuc.html, sonuc.plain, btnDahilDegil);
 });
 
 // ==================== SIFIRLA ====================
@@ -948,7 +933,8 @@ resetBtn.addEventListener('click', () => {
   titleInput.value = '';
   programInput.value = '';
   lastDayExtraInput.value = '';
-  dahilInput.value = '';
+  dahilVarInput.value = '';
+  dahilYokInput.value = '';
   updateAll();
   // ilk bölüme dön
   activeSection = '1';
