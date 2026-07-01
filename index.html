@@ -324,8 +324,9 @@
       <div class="panel" id="panel-1">
         <div class="card">
           <h3>1. Tur Detayı</h3>
-          <div class="btn-row">
+         <div class="btn-row">
             <button class="action-btn" id="btnTurBasligi">Tur Başlığı</button>
+            <button class="action-btn" id="btnGeceleme">Geceleme</button>
             <button class="action-btn" id="btnUlasim">Ulaşım</button>
           </div>
           <div id="noteMatchArea"></div>
@@ -528,6 +529,7 @@ const dahilVarInput = document.getElementById('dahilVarInput');
 const dahilYokInput = document.getElementById('dahilYokInput');
 
 const btnTurBasligi = document.getElementById('btnTurBasligi');
+const btnGeceleme = document.getElementById('btnGeceleme');
 const btnUlasim = document.getElementById('btnUlasim');
 const noteMatchArea = document.getElementById('noteMatchArea');
 const umreGidisRow = document.getElementById('umreGidisRow');
@@ -1125,6 +1127,14 @@ btnUlasim.addEventListener('click', () => {
   const airline = extractAirline(titleInput.value);
   if (!airline) { alert('Metinde "Hava Yolları" ifadesi bulunamadı.'); return; }
   copyPlain(airline, btnUlasim);
+});
+btnGeceleme.addEventListener('click', () => {
+  const days = parseProgram(programInput.value);
+  if (!days.length) { alert('Program metni bulunamadı.'); return; }
+  const gunSayisi = days.length;
+  const geceSayisi = gunSayisi - 1;
+  const text = `${geceSayisi} Gece ${gunSayisi} Gün`;
+  copyPlain(text, btnGeceleme);
 });
 
 // ---- Dahil / Dahil Değil kopyalama ----
