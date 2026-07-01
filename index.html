@@ -819,8 +819,8 @@ const extraRaw = lastDayExtraInput.value.trim();
     icerikBtn.className = 'action-btn';
     icerikBtn.textContent = 'İçerik';
     icerikBtn.addEventListener('click', () => {
-      if (isLast && extraRaw) {
-        const html = `<div style="text-align:justify;">${escHtml(d.icerik)}</div>${extraHtml}`;
+    if (isLast && extraRaw) {
+        const html = `<div style="text-align:justify;">${escHtml(d.icerik)}</div><br>${extraHtml}`;
         const plain = d.icerik + (extraPlain ? '\n\n' + extraPlain : '');
         copyRich(html, plain, icerikBtn);
       } else {
