@@ -257,8 +257,16 @@
           <span>Yönetici Modu</span>
           <span class="toggle-pill" id="adminTogglePill"></span>
         </div>
-        <div class="menu-item" id="notesMenuItem">
+       <div class="menu-item" id="notesMenuItem">
           <span>📒 Notlar</span>
+          <span>›</span>
+        </div>
+        <div class="menu-item" id="sectionsMenuItem">
+          <span>📑 Bölümler</span>
+          <span>›</span>
+        </div>
+        <div class="menu-item" id="depoMenuItem">
+          <span>📦 Depo Alanı</span>
           <span>›</span>
         </div>
       </div>
@@ -420,6 +428,44 @@
   </div>
 </div>
 
+<!-- Bölümler Modal -->
+<div class="modal-overlay" id="sectionsModalOverlay">
+  <div class="modal">
+    <h3>Bölümler</h3>
+    <div id="sectionsList"></div>
+    <div class="modal-actions">
+      <button class="cancel-btn" id="sectionsCloseBtn">Kapat</button>
+    </div>
+  </div>
+</div>
+
+<!-- Depo Şifre Modal -->
+<div class="modal-overlay" id="depoPassOverlay">
+  <div class="modal">
+    <h3>Depo Alanı</h3>
+    <div class="field">
+      <label for="depoPassInput">Şifre</label>
+      <input type="text" id="depoPassInput" placeholder="Şifre">
+    </div>
+    <div id="depoPassError" style="color:#dc2626;font-size:13px;min-height:16px;"></div>
+    <div class="modal-actions">
+      <button class="cancel-btn" id="depoPassCancelBtn">İptal</button>
+      <button class="save-btn" id="depoPassOkBtn">Giriş</button>
+    </div>
+  </div>
+</div>
+
+<!-- Depo Görüntüleme Modal -->
+<div class="modal-overlay" id="depoViewOverlay">
+  <div class="modal" style="max-width:600px;max-height:80vh;overflow-y:auto;">
+    <h3>📦 Depo Alanı</h3>
+    <div id="depoList"></div>
+    <div class="modal-actions">
+      <button class="cancel-btn" id="depoViewCloseBtn">Kapat</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -427,7 +473,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, setDoc,
-  onSnapshot, query, orderBy, serverTimestamp
+  onSnapshot, query, orderBy, serverTimestamp, arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ---- Firebase init ----
@@ -458,6 +504,19 @@ const menuDropdown = document.getElementById('menuDropdown');
 const adminToggleItem = document.getElementById('adminToggleItem');
 const adminTogglePill = document.getElementById('adminTogglePill');
 const notesMenuItem = document.getElementById('notesMenuItem');
+const sectionsMenuItem = document.getElementById('sectionsMenuItem');
+const depoMenuItem = document.getElementById('depoMenuItem');
+const sectionsModalOverlay = document.getElementById('sectionsModalOverlay');
+const sectionsList = document.getElementById('sectionsList');
+const sectionsCloseBtn = document.getElementById('sectionsCloseBtn');
+const depoPassOverlay = document.getElementById('depoPassOverlay');
+const depoPassInput = document.getElementById('depoPassInput');
+const depoPassError = document.getElementById('depoPassError');
+const depoPassCancelBtn = document.getElementById('depoPassCancelBtn');
+const depoPassOkBtn = document.getElementById('depoPassOkBtn');
+const depoViewOverlay = document.getElementById('depoViewOverlay');
+const depoList = document.getElementById('depoList');
+const depoViewCloseBtn = document.getElementById('depoViewCloseBtn');
 
 const sidebar = document.getElementById('sidebar');
 const resetBtn = document.getElementById('resetBtn');
@@ -513,6 +572,22 @@ let adminMode = false;
 let adminTexts = {}; // key -> text
 let adminEditingKey = null;
 let activeSection = '0';
+let hiddenSections = [];
+let unsubscribeSettings = null;
+let depoData = [];
+let unsubscribeDepo = null;
+
+const SECTION_LABELS = {
+  '0': '🏠 Form',
+  '1': 'Tur Detayı',
+  '2': 'Tarihler',
+  '3': 'Dahil - Hariç',
+  '4': 'Program',
+  '5': 'Fotoğraf',
+  '6': 'Yorumlar',
+  '7': 'SEO',
+  '8': 'Kategori'
+};
 
 const ACTIVE_SECTIONS = ['0', '1', '3', '4'];
 
@@ -571,8 +646,10 @@ onAuthStateChanged(auth, (user) => {
     navUser.textContent = user.email;
     loginBtn.disabled = false;
     loginBtn.textContent = 'Giriş Yap';
-    startListeningNotes();
+   startListeningNotes();
     startListeningAdminTexts();
+    startListeningSettings();
+    startListeningDepo();
     renderUmreButtons();
     renderDahilExtraButtons();
   } else {
@@ -580,7 +657,11 @@ onAuthStateChanged(auth, (user) => {
     appScreen.style.display = 'none';
     if (unsubscribeNotes) unsubscribeNotes();
     if (unsubscribeAdmin) unsubscribeAdmin();
+    if (unsubscribeSettings) unsubscribeSettings();
+    if (unsubscribeDepo) unsubscribeDepo();
     notes = [];
+    hiddenSections = [];
+    depoData = [];
     notesList.innerHTML = '<div class="loading-notes">Yükleniyor…</div>';
   }
 });
@@ -605,6 +686,35 @@ notesMenuItem.addEventListener('click', () => {
   menuDropdown.classList.remove('open');
   openNotesDrawer();
 });
+sectionsMenuItem.addEventListener('click', () => {
+  menuDropdown.classList.remove('open');
+  renderSectionsList();
+  sectionsModalOverlay.classList.add('open');
+});
+sectionsCloseBtn.addEventListener('click', () => sectionsModalOverlay.classList.remove('open'));
+sectionsModalOverlay.addEventListener('click', (e) => { if (e.target === sectionsModalOverlay) sectionsModalOverlay.classList.remove('open'); });
+
+depoMenuItem.addEventListener('click', () => {
+  menuDropdown.classList.remove('open');
+  depoPassInput.value = '';
+  depoPassError.textContent = '';
+  depoPassOverlay.classList.add('open');
+  setTimeout(() => depoPassInput.focus(), 50);
+});
+depoPassCancelBtn.addEventListener('click', () => depoPassOverlay.classList.remove('open'));
+depoPassOverlay.addEventListener('click', (e) => { if (e.target === depoPassOverlay) depoPassOverlay.classList.remove('open'); });
+depoPassInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') depoPassOkBtn.click(); });
+depoPassOkBtn.addEventListener('click', () => {
+  if (depoPassInput.value === '8761') {
+    depoPassOverlay.classList.remove('open');
+    renderDepoList();
+    depoViewOverlay.classList.add('open');
+  } else {
+    depoPassError.textContent = 'Şifre hatalı.';
+  }
+});
+depoViewCloseBtn.addEventListener('click', () => depoViewOverlay.classList.remove('open'));
+depoViewOverlay.addEventListener('click', (e) => { if (e.target === depoViewOverlay) depoViewOverlay.classList.remove('open'); });
 
 // ==================== SIDEBAR NAV ====================
 sidebar.querySelectorAll('.sec-item').forEach(item => {
@@ -627,7 +737,53 @@ function setDot(sec, color) {
 }
 
 // ==================== KOPYALAMA YARDIMCILARI ====================
-function flashBtn(btn) {
+function startListeningSettings() {
+  unsubscribeSettings = onSnapshot(doc(db, 'settings', 'hiddenSections'), (snap) => {
+    hiddenSections = (snap.exists() && snap.data().sections) || [];
+    applyHiddenSections();
+    renderSectionsList();
+  }, (err) => console.error('Ayarlar yüklenemedi:', err.message));
+}
+
+function applyHiddenSections() {
+  sidebar.querySelectorAll('.sec-item').forEach(item => {
+    const sec = item.dataset.sec;
+    item.style.display = hiddenSections.includes(sec) ? 'none' : '';
+  });
+}
+
+function renderSectionsList() {
+  sectionsList.innerHTML = '';
+  Object.keys(SECTION_LABELS).forEach(sec => {
+    const isHidden = hiddenSections.includes(sec);
+    const row = document.createElement('div');
+    row.className = 'menu-item';
+    row.style.cursor = 'default';
+    const span = document.createElement('span');
+    span.textContent = SECTION_LABELS[sec];
+    row.appendChild(span);
+    const btn = document.createElement('button');
+    btn.className = 'action-btn ' + (isHidden ? 'green' : 'red');
+    btn.style.margin = '0';
+    btn.textContent = isHidden ? 'Göster' : 'Gizle';
+    btn.addEventListener('click', () => toggleSectionHidden(sec));
+    row.appendChild(btn);
+    sectionsList.appendChild(row);
+  });
+}
+
+async function toggleSectionHidden(sec) {
+  const updated = hiddenSections.includes(sec)
+    ? hiddenSections.filter(s => s !== sec)
+    : [...hiddenSections, sec];
+  try {
+    await setDoc(doc(db, 'settings', 'hiddenSections'), { sections: updated });
+  } catch (e) {
+    alert('Kaydedilemedi: ' + e.message);
+  }
+}
+
+function setDot(sec, color) {
   const orig = btn.textContent;
   const wasGreen = btn.classList.contains('green');
   btn.textContent = '✓ Kopyalandı';
@@ -871,6 +1027,57 @@ function buildAdminButton(k) {
   return wrap;
 }
 
+function startListeningDepo() {
+  unsubscribeDepo = onSnapshot(collection(db, 'depo'), (snapshot) => {
+    depoData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderDepoList();
+  }, (err) => console.error('Depo yüklenemedi:', err.message));
+}
+
+function renderDepoList() {
+  depoList.innerHTML = '';
+  if (!depoData.length) {
+    depoList.innerHTML = '<div class="empty">Henüz kayıt yok.</div>';
+    return;
+  }
+  depoData.forEach(u => {
+    const group = document.createElement('div');
+    group.className = 'day-block';
+    const title = document.createElement('div');
+    title.className = 'day-title';
+    title.textContent = u.email || u.id;
+    group.appendChild(title);
+    (u.texts || []).forEach(t => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 0;font-size:14px;';
+      const span = document.createElement('span');
+      span.textContent = '• ' + t;
+      row.appendChild(span);
+      const copyB = document.createElement('button');
+      copyB.className = 'action-btn';
+      copyB.textContent = 'Kopyala';
+      copyB.style.margin = '0';
+      copyB.addEventListener('click', () => copyPlain(t, copyB));
+      row.appendChild(copyB);
+      group.appendChild(row);
+    });
+    depoList.appendChild(group);
+  });
+}
+
+async function saveToDepo(text) {
+  if (!text || !auth.currentUser) return;
+  const email = auth.currentUser.email;
+  try {
+    await setDoc(doc(db, 'depo', email), {
+      email: email,
+      texts: arrayUnion(text)
+    }, { merge: true });
+  } catch (e) {
+    console.error('Depo kaydedilemedi:', e.message);
+  }
+}
+
 function computeStatuses() {
   // Bölüm 1
   const title = titleInput.value.trim();
@@ -912,6 +1119,7 @@ dahilYokInput.addEventListener('input', updateAll);
 btnTurBasligi.addEventListener('click', () => {
   const val = toTitleCaseStr(titleInput.value);
   copyPlain(val, btnTurBasligi);
+  saveToDepo(val);
 });
 btnUlasim.addEventListener('click', () => {
   const airline = extractAirline(titleInput.value);
