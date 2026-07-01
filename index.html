@@ -785,17 +785,16 @@ function renderProgramDays() {
     programDays.innerHTML = '<div class="empty">Henüz program metni girilmedi.</div>';
     return;
   }
-  const extraRaw = lastDayExtraInput.value.trim();
+const extraRaw = lastDayExtraInput.value.trim();
   let extraHtml = '', extraPlain = '';
   if (extraRaw) {
-    const flat = flowText(extraRaw);
-    const firstSpace = flat.indexOf(' ');
-    // ilk satırı kalın yap: orijinal satır bazlı ilk satırı al
     const rawLines = extraRaw.split(/\n+/).map(l => l.trim()).filter(Boolean);
     const firstLine = rawLines[0] || '';
-    const rest = rawLines.slice(1).join(' ');
-    extraHtml = `<div style="text-align:center;"><b>${escHtml(firstLine)}</b>${rest ? '<br>' + escHtml(rest) : ''}</div>`;
-    extraPlain = firstLine + (rest ? '\n' + rest : '');
+    const restLines = rawLines.slice(1);
+    const restHtml = restLines.map(l => escHtml(l)).join('<br>');
+    const restPlain = restLines.join('\n');
+    extraHtml = `<div style="text-align:center;"><b>${escHtml(firstLine)}</b>${restHtml ? '<br>' + restHtml : ''}</div>`;
+    extraPlain = firstLine + (restPlain ? '\n' + restPlain : '');
   }
 
   days.forEach((d, idx) => {
