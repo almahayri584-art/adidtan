@@ -16,227 +16,161 @@
 
   /* ---- LOGIN ---- */
   #loginScreen {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background: #f4f6f8;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; background: #f4f6f8;
   }
   .login-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 32px 28px;
-    width: 100%;
-    max-width: 380px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    background: #fff; border-radius: 12px; padding: 32px 28px;
+    width: 100%; max-width: 380px; box-shadow: 0 4px 16px rgba(0,0,0,0.10);
   }
   .login-card h2 { margin: 0 0 24px; font-size: 20px; color: #1e293b; text-align: center; }
   .login-card label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 5px; }
   .login-card input {
-    width: 100%;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 15px;
-    margin-bottom: 14px;
+    width: 100%; border: 1px solid #d1d5db; border-radius: 8px;
+    padding: 10px 12px; font-size: 15px; margin-bottom: 14px;
   }
   .login-card input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
   .login-btn {
-    width: 100%;
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 11px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 4px;
+    width: 100%; background: #2563eb; color: #fff; border: none; border-radius: 8px;
+    padding: 11px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 4px;
   }
   .login-btn:hover { background: #1d4ed8; }
   .login-btn:disabled { background: #93c5fd; cursor: not-allowed; }
-  #loginError {
-    color: #dc2626;
-    font-size: 13px;
-    margin-top: 10px;
-    text-align: center;
-    min-height: 18px;
-  }
+  #loginError { color: #dc2626; font-size: 13px; margin-top: 10px; text-align: center; min-height: 18px; }
 
   /* ---- APP ---- */
   #appScreen { display: none; }
 
   nav {
-    background: #1e293b;
-    color: #fff;
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    background: #1e293b; color: #fff; padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    position: sticky; top: 0; z-index: 50;
   }
   nav .brand { font-weight: 600; font-size: 17px; white-space: nowrap; }
-  nav .nav-right { display: flex; align-items: center; gap: 10px; }
-  nav .nav-user { font-size: 12px; color: #94a3b8; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  nav .nav-right { display: flex; align-items: center; gap: 10px; position: relative; }
+  nav .nav-user { font-size: 12px; color: #94a3b8; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   nav button {
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    white-space: nowrap;
+    background: #2563eb; color: #fff; border: none; padding: 8px 14px;
+    border-radius: 6px; font-size: 13px; cursor: pointer; white-space: nowrap;
   }
   nav button:hover { background: #1d4ed8; }
   #logoutBtn { background: #475569; }
   #logoutBtn:hover { background: #334155; }
+  #menuBtn { background: #334155; font-size: 16px; padding: 8px 12px; }
+  #menuBtn:hover { background: #475569; }
 
-  .container {
-    max-width: 760px;
-    margin: 24px auto;
-    padding: 0 16px 60px;
+  .menu-dropdown {
+    display: none; position: absolute; top: 46px; right: 0;
+    background: #fff; color: #222; border-radius: 10px; min-width: 220px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18); overflow: hidden; z-index: 60;
   }
-
-  .card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 18px;
-    margin-bottom: 18px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  .menu-dropdown.open { display: block; }
+  .menu-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #f0f0f0;
   }
-
-  label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #555;
-    margin-bottom: 6px;
+  .menu-item:last-child { border-bottom: none; }
+  .menu-item:hover { background: #f7f9fb; }
+  .toggle-pill {
+    width: 38px; height: 22px; border-radius: 999px; background: #d1d5db; position: relative; transition: background .15s;
   }
+  .toggle-pill.on { background: #10b981; }
+  .toggle-pill::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
+    border-radius: 50%; background: #fff; transition: left .15s;
+  }
+  .toggle-pill.on::after { left: 18px; }
 
+  .layout { display: flex; max-width: 1100px; margin: 20px auto; padding: 0 16px 60px; gap: 18px; align-items: flex-start; }
+
+  /* Sidebar nav */
+  .sidebar {
+    width: 210px; flex-shrink: 0; background: #fff; border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; position: sticky; top: 74px;
+  }
+  .sidebar .sec-item {
+    display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+    font-size: 14px; cursor: pointer; border-left: 4px solid transparent; user-select: none;
+  }
+  .sidebar .sec-item:hover:not(.disabled) { background: #f7f9fb; }
+  .sidebar .sec-item.active { background: #eff6ff; border-left-color: #2563eb; font-weight: 600; }
+  .sidebar .sec-item.disabled { color: #b3b3b3; cursor: not-allowed; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; background: #ef4444; }
+  .dot.red { background: #ef4444; }
+  .dot.orange { background: #f59e0b; }
+  .dot.green { background: #10b981; }
+  .dot.gray { background: #cbd5e1; }
+
+  .main-col { flex: 1; min-width: 0; }
+
+  .top-actions { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+  .reset-btn {
+    background: #ef4444; color: #fff; border: none; padding: 9px 16px;
+    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .reset-btn:hover { background: #dc2626; }
+
+  .card { background: #fff; border-radius: 10px; padding: 18px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .card h3 { margin-top: 0; font-size: 16px; }
+
+  label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
   textarea, input[type=text] {
-    width: 100%;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 15px;
-    font-family: inherit;
-    resize: vertical;
+    width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 12px;
+    font-size: 15px; font-family: inherit; resize: vertical;
   }
-  textarea:focus, input[type=text]:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
-  }
+  textarea:focus, input[type=text]:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+  .form-field { margin-bottom: 16px; }
+  .form-field textarea { min-height: 80px; }
 
-  #inputBox { min-height: 90px; }
-  #outputBox { min-height: 90px; background: #f9fafb; }
+  .search-note {
+    border: 1px solid #fde68a; background: #fffbeb; border-radius: 8px;
+    padding: 10px 12px; margin-top: 8px;
+  }
+  .search-note h4 { margin: 0 0 4px; font-size: 14px; color: #92400e; }
+  .search-note p { margin: 0 0 8px; font-size: 14px; white-space: pre-wrap; color: #444; }
 
-  .copy-row { display: flex; justify-content: flex-end; margin-top: 8px; }
-  .copy-btn {
-    background: #10b981;
-    color: #fff;
-    border: none;
-    padding: 7px 14px;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .copy-btn:hover { background: #059669; }
-  .copy-btn.copied { background: #6b7280; }
+  /* Panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .panel-disabled { text-align: center; color: #999; padding: 40px 0; }
 
-  #searchResults { margin-top: 6px; }
-  .result-note {
-    border: 1px solid #fde68a;
-    background: #fffbeb;
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-top: 8px;
+  .action-btn {
+    background: #2563eb; color: #fff; border: none; padding: 9px 16px;
+    border-radius: 8px; font-size: 14px; cursor: pointer; margin: 4px 6px 4px 0;
   }
-  .result-note h4 { margin: 0 0 4px; font-size: 14px; color: #92400e; }
-  .result-note p { margin: 0; font-size: 14px; white-space: pre-wrap; color: #444; }
+  .action-btn:hover { background: #1d4ed8; }
+  .action-btn.copied { background: #10b981; }
+  .action-btn.green { background: #10b981; }
+  .action-btn.green:hover { background: #059669; }
+  .action-btn.red { background: #ef4444; }
+  .action-btn.red:hover { background: #dc2626; }
+  .btn-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; }
 
-  .notes-section h3 { margin-top: 0; font-size: 16px; display: flex; align-items: center; gap: 8px; }
-  .sync-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: #10b981;
-    display: inline-block;
-    title: "Firestore bağlantısı aktif";
+  .subhead { font-size: 14px; font-weight: 700; color: #374151; margin: 16px 0 8px; }
+  .edit-mini {
+    background: #fbbf24; color: #333; border: none; border-radius: 6px;
+    padding: 6px 10px; font-size: 12px; cursor: pointer; margin-left: 4px;
   }
+  .edit-mini:hover { background: #f59e0b; }
 
-  .note-item {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    overflow: hidden;
-  }
-  .note-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    background: #f9fafb;
-    cursor: pointer;
-    user-select: none;
-  }
-  .note-header-left { display: flex; flex-direction: column; gap: 2px; }
-  .note-header span.title { font-weight: 600; font-size: 15px; }
-  .note-meta { font-size: 11px; color: #9ca3af; }
-  .note-header .arrow { font-size: 12px; color: #888; transition: transform .15s; flex-shrink: 0; }
-  .note-body {
-    display: none;
-    padding: 12px 14px;
-    border-top: 1px solid #e5e7eb;
-  }
-  .note-body.open { display: block; }
-  .note-body p { white-space: pre-wrap; font-size: 14px; margin: 0 0 10px; color: #333; }
-  .note-actions { display: flex; gap: 8px; }
-  .note-actions button {
-    border: none;
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .edit-btn { background: #fbbf24; color: #333; }
-  .edit-btn:hover { background: #f59e0b; }
-  .delete-btn { background: #ef4444; color: #fff; }
-  .delete-btn:hover { background: #dc2626; }
+  .day-block { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+  .day-block .day-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
 
   .empty { color: #999; font-size: 14px; text-align: center; padding: 10px 0; }
   .loading-notes { color: #9ca3af; font-size: 14px; text-align: center; padding: 10px 0; }
 
-  /* Modal */
+  /* Modal (generic) */
   .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.45);
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 16px;
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45); align-items: center; justify-content: center; z-index: 100; padding: 16px;
   }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    width: 100%;
-    max-width: 460px;
-  }
+  .modal { background: #fff; border-radius: 10px; padding: 20px; width: 100%; max-width: 460px; }
   .modal h3 { margin-top: 0; }
   .modal textarea { min-height: 120px; margin-top: 4px; }
   .modal .field { margin-bottom: 14px; }
   .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
-  .modal-actions button {
-    border: none;
-    border-radius: 6px;
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
-  }
+  .modal-actions button { border: none; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; }
   .save-btn { background: #2563eb; color: #fff; }
   .save-btn:hover { background: #1d4ed8; }
   .save-btn:disabled { background: #93c5fd; cursor: not-allowed; }
@@ -245,33 +179,55 @@
 
   /* Confirm modal */
   .confirm-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.45);
-    align-items: center;
-    justify-content: center;
-    z-index: 200;
-    padding: 16px;
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45); align-items: center; justify-content: center; z-index: 200; padding: 16px;
   }
   .confirm-overlay.open { display: flex; }
-  .confirm-box {
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px 24px;
-    max-width: 340px;
-    width: 100%;
-  }
+  .confirm-box { background: #fff; border-radius: 10px; padding: 20px 24px; max-width: 340px; width: 100%; }
   .confirm-box p { margin: 0 0 18px; font-size: 15px; }
   .confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
-  .confirm-actions button {
-    border: none; border-radius: 6px;
-    padding: 8px 16px; font-size: 14px; cursor: pointer;
-  }
+  .confirm-actions button { border: none; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; }
   .confirm-yes { background: #ef4444; color: #fff; }
   .confirm-yes:hover { background: #dc2626; }
   .confirm-no { background: #e5e7eb; color: #333; }
   .confirm-no:hover { background: #d1d5db; }
+
+  /* Notes drawer */
+  .drawer-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 90;
+  }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; right: -400px; width: 100%; max-width: 380px; height: 100%;
+    background: #fff; z-index: 91; transition: right .2s; box-shadow: -4px 0 16px rgba(0,0,0,0.15);
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { right: 0; }
+  .drawer-header {
+    padding: 16px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;
+  }
+  .drawer-header h3 { margin: 0; font-size: 16px; }
+  .drawer-close { background: #e5e7eb; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 14px 16px; }
+  .drawer-add { padding: 12px 16px; border-top: 1px solid #e5e7eb; }
+  .drawer-add button { width: 100%; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 10px; font-size: 14px; cursor: pointer; }
+  .drawer-add button:hover { background: #1d4ed8; }
+
+  .note-item { border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .note-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f9fafb; cursor: pointer; user-select: none; }
+  .note-header-left { display: flex; flex-direction: column; gap: 2px; }
+  .note-header span.title { font-weight: 600; font-size: 15px; }
+  .note-meta { font-size: 11px; color: #9ca3af; }
+  .note-header .arrow { font-size: 12px; color: #888; transition: transform .15s; flex-shrink: 0; }
+  .note-body { display: none; padding: 12px 14px; border-top: 1px solid #e5e7eb; }
+  .note-body.open { display: block; }
+  .note-body p { white-space: pre-wrap; font-size: 14px; margin: 0 0 10px; color: #333; }
+  .note-actions { display: flex; gap: 8px; }
+  .note-actions button { border: none; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+  .edit-btn { background: #fbbf24; color: #333; }
+  .edit-btn:hover { background: #f59e0b; }
+  .delete-btn { background: #ef4444; color: #fff; }
+  .delete-btn:hover { background: #dc2626; }
 </style>
 </head>
 <body>
@@ -295,29 +251,120 @@
     <div class="brand">🌍 Hızlı Araçlar</div>
     <div class="nav-right">
       <span class="nav-user" id="navUser"></span>
-      <button id="addNoteBtn">+ Not Ekle</button>
+      <button id="menuBtn">☰</button>
+      <div class="menu-dropdown" id="menuDropdown">
+        <div class="menu-item" id="adminToggleItem">
+          <span>Yönetici Modu</span>
+          <span class="toggle-pill" id="adminTogglePill"></span>
+        </div>
+        <div class="menu-item" id="notesMenuItem">
+          <span>📒 Notlar</span>
+          <span>›</span>
+        </div>
+      </div>
       <button id="logoutBtn">Çıkış</button>
     </div>
   </nav>
 
-  <div class="container">
-    <div class="card">
-      <label for="inputBox">Metin Gir</label>
-      <textarea id="inputBox" placeholder="Buraya yaz — baş harf büyütme için veya not aramak için..."></textarea>
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="sec-item" data-sec="1"><span class="dot red" id="dot-1"></span>Tur Detayı</div>
+      <div class="sec-item disabled" data-sec="2"><span class="dot gray"></span>Tarihler</div>
+      <div class="sec-item" data-sec="3"><span class="dot red" id="dot-3"></span>Dahil - Hariç</div>
+      <div class="sec-item" data-sec="4"><span class="dot red" id="dot-4"></span>Program</div>
+      <div class="sec-item disabled" data-sec="5"><span class="dot gray"></span>Fotoğraf</div>
+      <div class="sec-item disabled" data-sec="6"><span class="dot gray"></span>Yorumlar</div>
+      <div class="sec-item disabled" data-sec="7"><span class="dot gray"></span>SEO</div>
+      <div class="sec-item disabled" data-sec="8"><span class="dot gray"></span>Kategori</div>
+    </div>
 
-      <label style="margin-top:14px;">Sonuç (İlk Harf Büyük, Kalan Küçük)</label>
-      <textarea id="outputBox" readonly></textarea>
-      <div class="copy-row">
-        <button class="copy-btn" id="copyBtn">Kopyala</button>
+    <!-- MAIN -->
+    <div class="main-col">
+      <div class="top-actions">
+        <button class="reset-btn" id="resetBtn">↺ Sıfırla</button>
       </div>
 
-      <div id="searchResults"></div>
-    </div>
+      <!-- FORM -->
+      <div class="card">
+        <div class="form-field">
+          <label for="titleInput">Tur Başlığı Metni</label>
+          <textarea id="titleInput" placeholder="Buraya başlık / uçuş bilgisi metnini yaz..."></textarea>
+        </div>
+        <div class="form-field">
+          <label for="programInput">Program</label>
+          <textarea id="programInput" placeholder="Turun tüm gün gün programını buraya yapıştır..." style="min-height:140px;"></textarea>
+        </div>
+        <div class="form-field">
+          <label for="lastDayExtraInput">Son Gün Ek Metni (opsiyonel)</label>
+          <textarea id="lastDayExtraInput" placeholder="Son günün içeriğinin altına eklenecek metin..."></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:0;">
+          <label for="dahilInput">Dahil / Dahil Değil</label>
+          <textarea id="dahilInput" placeholder="İçinde (Dahil) ve (Dahil Değil) başlıkları olan metni yapıştır..." style="min-height:140px;"></textarea>
+        </div>
+      </div>
 
-    <div class="card notes-section">
-      <h3>Notlar <span class="sync-dot" title="Firestore canlı bağlantı"></span></h3>
-      <div id="notesList"><div class="loading-notes">Yükleniyor…</div></div>
+      <!-- PANEL 1: TUR DETAYI -->
+      <div class="panel active" id="panel-1">
+        <div class="card">
+          <h3>1. Tur Detayı</h3>
+          <div class="btn-row">
+            <button class="action-btn" id="btnTurBasligi">Tur Başlığı</button>
+            <button class="action-btn" id="btnUlasim">Ulaşım</button>
+          </div>
+          <div id="noteMatchArea"></div>
+
+          <div class="subhead">Umre Gidiş</div>
+          <div class="btn-row" id="umreGidisRow"></div>
+          <div class="subhead">Umre Dönüş</div>
+          <div class="btn-row" id="umreDonusRow"></div>
+        </div>
+      </div>
+
+      <!-- PANEL 3: DAHIL HARIC -->
+      <div class="panel" id="panel-3">
+        <div class="card">
+          <h3>3. Dahil - Hariç</h3>
+          <div class="btn-row">
+            <button class="action-btn" id="btnDahil">Dahil</button>
+            <button class="action-btn" id="btnDahilDegil">Dahil Değil</button>
+          </div>
+          <div class="subhead">Ek Bilgiler</div>
+          <div class="btn-row" id="dahilExtraRow"></div>
+        </div>
+      </div>
+
+      <!-- PANEL 4: PROGRAM -->
+      <div class="panel" id="panel-4">
+        <div class="card">
+          <h3>4. Program</h3>
+          <div id="programDays"><div class="empty">Henüz program metni girilmedi.</div></div>
+        </div>
+      </div>
+
+      <!-- Devre dışı paneller -->
+      <div class="panel" id="panel-2"><div class="card panel-disabled">Bu bölüm şimdilik aktif değil.</div></div>
+      <div class="panel" id="panel-5"><div class="card panel-disabled">Bu bölüm şimdilik aktif değil.</div></div>
+      <div class="panel" id="panel-6"><div class="card panel-disabled">Bu bölüm şimdilik aktif değil.</div></div>
+      <div class="panel" id="panel-7"><div class="card panel-disabled">Bu bölüm şimdilik aktif değil.</div></div>
+      <div class="panel" id="panel-8"><div class="card panel-disabled">Bu bölüm şimdilik aktif değil.</div></div>
     </div>
+  </div>
+</div>
+
+<!-- Notlar Drawer -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="notesDrawer">
+  <div class="drawer-header">
+    <h3>📒 Notlar</h3>
+    <button class="drawer-close" id="drawerCloseBtn">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div id="notesList"><div class="loading-notes">Yükleniyor…</div></div>
+  </div>
+  <div class="drawer-add">
+    <button id="addNoteBtn">+ Not Ekle</button>
   </div>
 </div>
 
@@ -340,6 +387,21 @@
   </div>
 </div>
 
+<!-- Admin metin düzenleme modal -->
+<div class="modal-overlay" id="adminModalOverlay">
+  <div class="modal">
+    <h3 id="adminModalTitle">Metni Düzenle</h3>
+    <div class="field">
+      <label for="adminTextInput">Kopyalanacak Metin</label>
+      <textarea id="adminTextInput" placeholder="Butona basılınca kopyalanacak metni yazın..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel-btn" id="adminCancelBtn">İptal</button>
+      <button class="save-btn" id="adminSaveBtn">Kaydet</button>
+    </div>
+  </div>
+</div>
+
 <!-- Silme Onay Modal -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
@@ -354,22 +416,11 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getAuth,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  query,
-  orderBy,
-  serverTimestamp
+  getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, setDoc,
+  onSnapshot, query, orderBy, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ---- Firebase init ----
@@ -382,7 +433,6 @@ const firebaseConfig = {
   appId: "1:446690901913:web:c10cf72e5d69ed57a0dd08",
   measurementId: "G-FL58T13YQ6"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -396,28 +446,86 @@ const loginBtn = document.getElementById('loginBtn');
 const loginError = document.getElementById('loginError');
 const navUser = document.getElementById('navUser');
 const logoutBtn = document.getElementById('logoutBtn');
+const menuBtn = document.getElementById('menuBtn');
+const menuDropdown = document.getElementById('menuDropdown');
+const adminToggleItem = document.getElementById('adminToggleItem');
+const adminTogglePill = document.getElementById('adminTogglePill');
+const notesMenuItem = document.getElementById('notesMenuItem');
+
+const sidebar = document.getElementById('sidebar');
+const resetBtn = document.getElementById('resetBtn');
+
+const titleInput = document.getElementById('titleInput');
+const programInput = document.getElementById('programInput');
+const lastDayExtraInput = document.getElementById('lastDayExtraInput');
+const dahilInput = document.getElementById('dahilInput');
+
+const btnTurBasligi = document.getElementById('btnTurBasligi');
+const btnUlasim = document.getElementById('btnUlasim');
+const noteMatchArea = document.getElementById('noteMatchArea');
+const umreGidisRow = document.getElementById('umreGidisRow');
+const umreDonusRow = document.getElementById('umreDonusRow');
+
+const btnDahil = document.getElementById('btnDahil');
+const btnDahilDegil = document.getElementById('btnDahilDegil');
+const dahilExtraRow = document.getElementById('dahilExtraRow');
+
+const programDays = document.getElementById('programDays');
+
+const drawerOverlay = document.getElementById('drawerOverlay');
+const notesDrawer = document.getElementById('notesDrawer');
+const drawerCloseBtn = document.getElementById('drawerCloseBtn');
 const addNoteBtn = document.getElementById('addNoteBtn');
-const inputBox = document.getElementById('inputBox');
-const outputBox = document.getElementById('outputBox');
-const copyBtn = document.getElementById('copyBtn');
-const searchResults = document.getElementById('searchResults');
 const notesList = document.getElementById('notesList');
+
 const modalOverlay = document.getElementById('modalOverlay');
 const modalTitle = document.getElementById('modalTitle');
 const noteTitleInput = document.getElementById('noteTitleInput');
 const noteContentInput = document.getElementById('noteContentInput');
 const cancelModalBtn = document.getElementById('cancelModalBtn');
 const saveNoteBtn = document.getElementById('saveNoteBtn');
+
+const adminModalOverlay = document.getElementById('adminModalOverlay');
+const adminModalTitle = document.getElementById('adminModalTitle');
+const adminTextInput = document.getElementById('adminTextInput');
+const adminCancelBtn = document.getElementById('adminCancelBtn');
+const adminSaveBtn = document.getElementById('adminSaveBtn');
+
 const confirmOverlay = document.getElementById('confirmOverlay');
 const confirmYes = document.getElementById('confirmYes');
 const confirmNo = document.getElementById('confirmNo');
 
+// ---- Durum ----
 let notes = [];
 let editingId = null;
 let pendingDeleteId = null;
 let unsubscribeNotes = null;
+let unsubscribeAdmin = null;
+let adminMode = false;
+let adminTexts = {}; // key -> text
+let adminEditingKey = null;
+let activeSection = '1';
 
-// ---- Auth ----
+const ACTIVE_SECTIONS = ['1', '3', '4'];
+
+// Umre / Dahil-Hariç buton tanımları
+const UMRE_GIDIS_KEYS = [
+  { key: 'umre_gidis_yurtici', label: 'Yurtiçi' },
+  { key: 'umre_gidis_yurtdisi', label: 'Yurtdışı' },
+  { key: 'umre_gidis_gemi', label: 'Gemi' }
+];
+const UMRE_DONUS_KEYS = [
+  { key: 'umre_donus_yurtici', label: 'Yurtiçi' },
+  { key: 'umre_donus_yurtdisi', label: 'Yurtdışı' },
+  { key: 'umre_donus_gemi', label: 'Gemi' }
+];
+const DAHIL_EXTRA_KEYS = [
+  { key: 'dahil_notlar', label: 'Notlar' },
+  { key: 'dahil_vize', label: 'Vize Bilgisi' },
+  { key: 'dahil_iptal', label: 'İptal Şartları' }
+];
+
+// ==================== AUTH ====================
 loginBtn.addEventListener('click', async () => {
   const email = emailInput.value.trim();
   const pass = passwordInput.value;
@@ -440,11 +548,11 @@ loginBtn.addEventListener('click', async () => {
     loginError.textContent = msgs[e.code] || 'Giriş başarısız: ' + e.message;
   }
 });
-
 passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
 
 logoutBtn.addEventListener('click', async () => {
   if (unsubscribeNotes) unsubscribeNotes();
+  if (unsubscribeAdmin) unsubscribeAdmin();
   await signOut(auth);
 });
 
@@ -456,28 +564,94 @@ onAuthStateChanged(auth, (user) => {
     loginBtn.disabled = false;
     loginBtn.textContent = 'Giriş Yap';
     startListeningNotes();
+    startListeningAdminTexts();
+    renderUmreButtons();
+    renderDahilExtraButtons();
   } else {
     loginScreen.style.display = 'flex';
     appScreen.style.display = 'none';
     if (unsubscribeNotes) unsubscribeNotes();
+    if (unsubscribeAdmin) unsubscribeAdmin();
     notes = [];
     notesList.innerHTML = '<div class="loading-notes">Yükleniyor…</div>';
   }
 });
 
-// ---- Firestore dinle ----
-function startListeningNotes() {
-  const q = query(collection(db, 'notes'), orderBy('createdAt', 'desc'));
-  unsubscribeNotes = onSnapshot(q, (snapshot) => {
-    notes = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderNotes();
-    runSearch(inputBox.value);
-  }, (err) => {
-    notesList.innerHTML = '<div class="empty">Notlar yüklenemedi: ' + err.message + '</div>';
+// ==================== MENU / ADMIN TOGGLE ====================
+menuBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  menuDropdown.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  if (!menuDropdown.contains(e.target) && e.target !== menuBtn) {
+    menuDropdown.classList.remove('open');
+  }
+});
+adminToggleItem.addEventListener('click', () => {
+  adminMode = !adminMode;
+  adminTogglePill.classList.toggle('on', adminMode);
+  renderUmreButtons();
+  renderDahilExtraButtons();
+});
+notesMenuItem.addEventListener('click', () => {
+  menuDropdown.classList.remove('open');
+  openNotesDrawer();
+});
+
+// ==================== SIDEBAR NAV ====================
+sidebar.querySelectorAll('.sec-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const sec = item.dataset.sec;
+    if (!ACTIVE_SECTIONS.includes(sec)) return;
+    activeSection = sec;
+    sidebar.querySelectorAll('.sec-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + sec).classList.add('active');
   });
+});
+
+function setDot(sec, color) {
+  const d = document.getElementById('dot-' + sec);
+  if (!d) return;
+  d.classList.remove('red', 'orange', 'green', 'gray');
+  d.classList.add(color);
 }
 
-// ---- Baş harf dönüştürme ----
+// ==================== KOPYALAMA YARDIMCILARI ====================
+function flashBtn(btn) {
+  const orig = btn.textContent;
+  const wasGreen = btn.classList.contains('green');
+  btn.textContent = '✓ Kopyalandı';
+  setTimeout(() => { btn.textContent = orig; }, 1300);
+}
+
+async function copyPlain(text, btn) {
+  if (!text) return;
+  try { await navigator.clipboard.writeText(text); if (btn) flashBtn(btn); }
+  catch (e) { alert('Kopyalanamadı: ' + e.message); }
+}
+
+async function copyRich(html, plain, btn) {
+  if (!plain && !html) return;
+  try {
+    if (window.ClipboardItem) {
+      const item = new ClipboardItem({
+        'text/html': new Blob([html || plain], { type: 'text/html' }),
+        'text/plain': new Blob([plain || html.replace(/<[^>]+>/g, '')], { type: 'text/plain' })
+      });
+      await navigator.clipboard.write([item]);
+    } else {
+      await navigator.clipboard.writeText(plain || html.replace(/<[^>]+>/g, ''));
+    }
+    if (btn) flashBtn(btn);
+  } catch (e) {
+    try { await navigator.clipboard.writeText(plain || ''); if (btn) flashBtn(btn); }
+    catch (e2) { alert('Kopyalanamadı: ' + e2.message); }
+  }
+}
+
+// ==================== BAŞ HARF BÜYÜTME ====================
 function toTitleCaseStr(text) {
   return text.replace(/\S+/g, (word) => {
     let i = 0;
@@ -489,41 +663,314 @@ function toTitleCaseStr(text) {
   });
 }
 
-inputBox.addEventListener('input', () => {
-  outputBox.value = toTitleCaseStr(inputBox.value);
-  runSearch(inputBox.value);
-});
+// ==================== ULAŞIM (HAVAYOLU) TESPİTİ ====================
+function extractAirline(text) {
+  const m = text.match(/([A-Za-zÇĞİÖŞÜçğıöşü]+)\s+[Hh]ava\s*[Yy]olları/);
+  if (!m) return null;
+  const phrase = m[1] + ' Hava Yolları';
+  return toTitleCaseStr(phrase);
+}
 
-copyBtn.addEventListener('click', () => {
-  if (!outputBox.value) return;
-  navigator.clipboard.writeText(outputBox.value).then(() => {
-    copyBtn.textContent = 'Kopyalandı ✓';
-    copyBtn.classList.add('copied');
-    setTimeout(() => { copyBtn.textContent = 'Kopyala'; copyBtn.classList.remove('copied'); }, 1500);
-  });
-});
-
-// ---- Not Arama ----
-function runSearch(text) {
-  searchResults.innerHTML = '';
-  if (!text.trim()) return;
+// ==================== NOT EŞLEŞMESİ (Tur Başlığı kutusu) ====================
+function findMatchingNote(text) {
+  if (!text.trim()) return null;
   const words = text.toLocaleLowerCase('tr-TR')
     .split(/[^a-zA-ZçğıöşüÇĞİÖŞÜ0-9]+/)
     .filter(Boolean);
-  if (!words.length) return;
-  const matched = notes.filter(n =>
-    words.includes((n.title || '').toLocaleLowerCase('tr-TR'))
-  );
-  matched.forEach(n => {
-    const div = document.createElement('div');
-    div.className = 'result-note';
-    div.innerHTML = `<h4>📌 ${esc(n.title)}</h4><p>${esc(n.content || '')}</p>`;
-    searchResults.appendChild(div);
+  if (!words.length) return null;
+  return notes.find(n => words.includes((n.title || '').toLocaleLowerCase('tr-TR'))) || null;
+}
+
+// ==================== PROGRAM AYRIŞTIRMA ====================
+const DATE_RE = /((\d{1,2}[./]\d{1,2}[./]\d{2,4})|((\d{1,2}\s+)?(Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık)\s*\d{0,4})|((Pazartesi|Salı|Çarşamba|Perşembe|Cuma|Cumartesi|Pazar)))/i;
+
+function flowText(str) {
+  // düz metne çevir: satır sonlarını boşluğa çevir, fazla boşlukları temizle
+  return str
+    .replace(/\r/g, '')
+    .split(/\n+/)
+    .map(l => l.trim())
+    .filter(Boolean)
+    .join(' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function parseProgram(text) {
+  if (!text.trim()) return [];
+  const dayRe = /(\d+)\s*\.\s*[Gg][üÜ]n\b/g;
+  const markers = [];
+  let m;
+  while ((m = dayRe.exec(text)) !== null) {
+    markers.push({ day: m[1], index: m.index, end: m.index + m[0].length });
+  }
+  if (!markers.length) return [];
+  const days = [];
+  for (let i = 0; i < markers.length; i++) {
+    const start = markers[i].end;
+    const stop = (i + 1 < markers.length) ? markers[i + 1].index : text.length;
+    const block = text.slice(start, stop);
+    const dateMatch = block.match(DATE_RE);
+    let aciklama = '', icerik = '';
+    if (dateMatch) {
+      aciklama = block.slice(0, dateMatch.index).trim();
+      icerik = block.slice(dateMatch.index + dateMatch[0].length).trim();
+    } else {
+      aciklama = block.trim();
+      icerik = '';
+    }
+    days.push({ day: markers[i].day, aciklama, icerik: flowText(icerik) });
+  }
+  return days;
+}
+
+// ==================== DAHIL / DAHIL DEĞİL AYRIŞTIRMA ====================
+function parseDahilHaric(text) {
+  const result = { dahilFound: false, dahilDegilFound: false, dahilHtml: '', dahilPlain: '', dahilDegilHtml: '', dahilDegilPlain: '' };
+  if (!text.trim()) return result;
+  const lines = text.split(/\n/);
+  let dahilStart = -1, dahilDegilStart = -1;
+  lines.forEach((line, idx) => {
+    const low = line.toLocaleLowerCase('tr-TR');
+    if (dahilDegilStart === -1 && /dahil\s*değil/.test(low)) dahilDegilStart = idx;
+  });
+  lines.forEach((line, idx) => {
+    const low = line.toLocaleLowerCase('tr-TR');
+    if (dahilStart === -1 && /\bdahil\b/.test(low) && !/dahil\s*değil/.test(low)) dahilStart = idx;
+  });
+
+  function collect(startIdx, stopIdx) {
+    const items = [];
+    for (let i = startIdx + 1; i < stopIdx; i++) {
+      const t = lines[i].replace(/^[-•*\u2022]\s*/, '').trim();
+      if (t) items.push(t);
+    }
+    return items;
+  }
+
+  if (dahilStart !== -1) {
+    const stop = (dahilDegilStart !== -1 && dahilDegilStart > dahilStart) ? dahilDegilStart : lines.length;
+    const items = collect(dahilStart, stop);
+    if (items.length) {
+      result.dahilFound = true;
+      result.dahilPlain = items.map(i => '• ' + i).join('\n');
+      result.dahilHtml = '<ul>' + items.map(i => `<li>${escHtml(i)}</li>`).join('') + '</ul>';
+    }
+  }
+  if (dahilDegilStart !== -1) {
+    const stop = (dahilStart !== -1 && dahilStart > dahilDegilStart) ? dahilStart : lines.length;
+    const items = collect(dahilDegilStart, stop);
+    if (items.length) {
+      result.dahilDegilFound = true;
+      result.dahilDegilPlain = items.map(i => (/zorunlu/i.test(i) ? '• ' + i.toUpperCase() : '• ' + i)).join('\n');
+      result.dahilDegilHtml = '<ul>' + items.map(i => {
+        const esc = escHtml(i);
+        return /zorunlu/i.test(i) ? `<li><b>${esc}</b></li>` : `<li>${esc}</li>`;
+      }).join('') + '</ul>';
+    }
+  }
+  return result;
+}
+
+function escHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+
+// ==================== CANLI GÜNCELLEME / RENDER ====================
+function renderNoteMatch() {
+  const note = findMatchingNote(titleInput.value);
+  noteMatchArea.innerHTML = '';
+  if (!note) return;
+  const div = document.createElement('div');
+  div.className = 'search-note';
+  div.innerHTML = `<h4>📌 ${escHtml(note.title)}</h4><p>${escHtml(note.content || '')}</p>`;
+  const copyB = document.createElement('button');
+  copyB.className = 'action-btn';
+  copyB.textContent = 'Açıklamayı Kopyala';
+  copyB.addEventListener('click', () => copyPlain(note.content || '', copyB));
+  div.appendChild(copyB);
+  noteMatchArea.appendChild(div);
+}
+
+function renderProgramDays() {
+  const days = parseProgram(programInput.value);
+  programDays.innerHTML = '';
+  if (!days.length) {
+    programDays.innerHTML = '<div class="empty">Henüz program metni girilmedi.</div>';
+    return;
+  }
+  const extraRaw = lastDayExtraInput.value.trim();
+  let extraHtml = '', extraPlain = '';
+  if (extraRaw) {
+    const flat = flowText(extraRaw);
+    const firstSpace = flat.indexOf(' ');
+    // ilk satırı kalın yap: orijinal satır bazlı ilk satırı al
+    const rawLines = extraRaw.split(/\n+/).map(l => l.trim()).filter(Boolean);
+    const firstLine = rawLines[0] || '';
+    const rest = rawLines.slice(1).join(' ');
+    extraHtml = `<div style="text-align:center;"><b>${escHtml(firstLine)}</b>${rest ? '<br>' + escHtml(rest) : ''}</div>`;
+    extraPlain = firstLine + (rest ? '\n' + rest : '');
+  }
+
+  days.forEach((d, idx) => {
+    const isLast = idx === days.length - 1;
+    const block = document.createElement('div');
+    block.className = 'day-block';
+    const title = document.createElement('div');
+    title.className = 'day-title';
+    title.textContent = d.day + '. Gün';
+    block.appendChild(title);
+
+    const row = document.createElement('div');
+    row.className = 'btn-row';
+
+    const aciklamaBtn = document.createElement('button');
+    aciklamaBtn.className = 'action-btn';
+    aciklamaBtn.textContent = 'Açıklama';
+    aciklamaBtn.addEventListener('click', () => copyPlain(d.aciklama, aciklamaBtn));
+    row.appendChild(aciklamaBtn);
+
+    const icerikBtn = document.createElement('button');
+    icerikBtn.className = 'action-btn';
+    icerikBtn.textContent = 'İçerik';
+    icerikBtn.addEventListener('click', () => {
+      if (isLast && extraRaw) {
+        const html = `<div style="text-align:justify;">${escHtml(d.icerik)}</div>${extraHtml}`;
+        const plain = d.icerik + (extraPlain ? '\n\n' + extraPlain : '');
+        copyRich(html, plain, icerikBtn);
+      } else {
+        copyRich(`<div style="text-align:justify;">${escHtml(d.icerik)}</div>`, d.icerik, icerikBtn);
+      }
+    });
+    row.appendChild(icerikBtn);
+
+    block.appendChild(row);
+    programDays.appendChild(block);
   });
 }
 
-// ---- Not listesi ----
-function renderNotes() {
+function renderUmreButtons() {
+  umreGidisRow.innerHTML = '';
+  umreDonusRow.innerHTML = '';
+  UMRE_GIDIS_KEYS.forEach(k => umreGidisRow.appendChild(buildAdminButton(k)));
+  UMRE_DONUS_KEYS.forEach(k => umreDonusRow.appendChild(buildAdminButton(k)));
+}
+function renderDahilExtraButtons() {
+  dahilExtraRow.innerHTML = '';
+  DAHIL_EXTRA_KEYS.forEach(k => dahilExtraRow.appendChild(buildAdminButton(k)));
+}
+
+function buildAdminButton(k) {
+  const wrap = document.createElement('span');
+  wrap.style.display = 'inline-flex';
+  wrap.style.alignItems = 'center';
+  const text = adminTexts[k.key] || '';
+  const btn = document.createElement('button');
+  btn.className = 'action-btn ' + (text ? 'green' : 'red');
+  btn.textContent = k.label;
+  btn.addEventListener('click', () => {
+    if (!text) return;
+    copyPlain(text, btn);
+  });
+  wrap.appendChild(btn);
+  if (adminMode) {
+    const editBtn = document.createElement('button');
+    editBtn.className = 'edit-mini';
+    editBtn.textContent = '✎';
+    editBtn.addEventListener('click', () => openAdminModal(k.key, k.label, text));
+    wrap.appendChild(editBtn);
+  }
+  return wrap;
+}
+
+function computeStatuses() {
+  // Bölüm 1
+  const title = titleInput.value.trim();
+  const airline = extractAirline(titleInput.value);
+  if (!title) setDot('1', 'red');
+  else if (!airline) setDot('1', 'orange');
+  else setDot('1', 'green');
+
+  // Bölüm 3
+  const dh = parseDahilHaric(dahilInput.value);
+  if (!dh.dahilFound && !dh.dahilDegilFound) setDot('3', 'red');
+  else if (dh.dahilFound && dh.dahilDegilFound) setDot('3', 'green');
+  else setDot('3', 'orange');
+
+  // Bölüm 4
+  const days = parseProgram(programInput.value);
+  if (!days.length) setDot('4', 'red');
+  else {
+    const lastHasIcerik = days[days.length - 1].icerik.length > 0;
+    setDot('4', lastHasIcerik ? 'green' : 'orange');
+  }
+}
+
+function updateAll() {
+  renderNoteMatch();
+  renderProgramDays();
+  computeStatuses();
+}
+
+// ---- Form dinleyicileri ----
+titleInput.addEventListener('input', updateAll);
+programInput.addEventListener('input', updateAll);
+lastDayExtraInput.addEventListener('input', updateAll);
+dahilInput.addEventListener('input', updateAll);
+
+// ---- Tur Başlığı / Ulaşım kopyalama ----
+btnTurBasligi.addEventListener('click', () => {
+  const val = toTitleCaseStr(titleInput.value);
+  copyPlain(val, btnTurBasligi);
+});
+btnUlasim.addEventListener('click', () => {
+  const airline = extractAirline(titleInput.value);
+  if (!airline) { alert('Metinde "Hava Yolları" ifadesi bulunamadı.'); return; }
+  copyPlain(airline, btnUlasim);
+});
+
+// ---- Dahil / Dahil Değil kopyalama ----
+btnDahil.addEventListener('click', () => {
+  const dh = parseDahilHaric(dahilInput.value);
+  if (!dh.dahilFound) { alert('"Dahil" bölümü bulunamadı.'); return; }
+  copyRich(dh.dahilHtml, dh.dahilPlain, btnDahil);
+});
+btnDahilDegil.addEventListener('click', () => {
+  const dh = parseDahilHaric(dahilInput.value);
+  if (!dh.dahilDegilFound) { alert('"Dahil Değil" bölümü bulunamadı.'); return; }
+  copyRich(dh.dahilDegilHtml, dh.dahilDegilPlain, btnDahilDegil);
+});
+
+// ==================== SIFIRLA ====================
+resetBtn.addEventListener('click', () => {
+  titleInput.value = '';
+  programInput.value = '';
+  lastDayExtraInput.value = '';
+  dahilInput.value = '';
+  updateAll();
+  // ilk bölüme dön
+  activeSection = '1';
+  sidebar.querySelectorAll('.sec-item').forEach(i => i.classList.remove('active'));
+  sidebar.querySelector('[data-sec="1"]').classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-1').classList.add('active');
+});
+
+// ==================== FIRESTORE: NOTLAR ====================
+function startListeningNotes() {
+  const q = query(collection(db, 'notes'), orderBy('createdAt', 'desc'));
+  unsubscribeNotes = onSnapshot(q, (snapshot) => {
+    notes = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderNotesList();
+    updateAll();
+  }, (err) => {
+    notesList.innerHTML = '<div class="empty">Notlar yüklenemedi: ' + err.message + '</div>';
+  });
+}
+
+function renderNotesList() {
   notesList.innerHTML = '';
   if (!notes.length) {
     notesList.innerHTML = '<div class="empty">Henüz not eklenmedi.</div>';
@@ -531,19 +978,19 @@ function renderNotes() {
   }
   notes.forEach(note => {
     const ts = note.createdAt?.toDate?.();
-    const dateStr = ts ? ts.toLocaleDateString('tr-TR', { day:'2-digit', month:'2-digit', year:'numeric' }) : '';
+    const dateStr = ts ? ts.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
     const item = document.createElement('div');
     item.className = 'note-item';
     item.innerHTML = `
       <div class="note-header" data-id="${note.id}">
         <div class="note-header-left">
-          <span class="title">${esc(note.title)}</span>
+          <span class="title">${escHtml(note.title)}</span>
           ${dateStr ? `<span class="note-meta">${dateStr}</span>` : ''}
         </div>
         <span class="arrow">▼</span>
       </div>
       <div class="note-body" id="body-${note.id}">
-        <p>${esc(note.content || '')}</p>
+        <p>${escHtml(note.content || '')}</p>
         <div class="note-actions">
           <button class="edit-btn" data-id="${note.id}">Düzenle</button>
           <button class="delete-btn" data-id="${note.id}">Sil</button>
@@ -561,11 +1008,9 @@ function renderNotes() {
       arrow.style.transform = !isOpen ? 'rotate(180deg)' : '';
     });
   });
-
   notesList.querySelectorAll('.edit-btn').forEach(b => {
-    b.addEventListener('click', (e) => { e.stopPropagation(); openModal(b.dataset.id); });
+    b.addEventListener('click', (e) => { e.stopPropagation(); openNoteModal(b.dataset.id); });
   });
-
   notesList.querySelectorAll('.delete-btn').forEach(b => {
     b.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -575,13 +1020,11 @@ function renderNotes() {
   });
 }
 
-// ---- Silme onayı ----
 confirmYes.addEventListener('click', async () => {
   if (!pendingDeleteId) return;
   confirmOverlay.classList.remove('open');
-  try {
-    await deleteDoc(doc(db, 'notes', pendingDeleteId));
-  } catch (e) { alert('Silinemedi: ' + e.message); }
+  try { await deleteDoc(doc(db, 'notes', pendingDeleteId)); }
+  catch (e) { alert('Silinemedi: ' + e.message); }
   pendingDeleteId = null;
 });
 confirmNo.addEventListener('click', () => {
@@ -589,8 +1032,18 @@ confirmNo.addEventListener('click', () => {
   pendingDeleteId = null;
 });
 
-// ---- Modal ----
-function openModal(id) {
+function openNotesDrawer() {
+  drawerOverlay.classList.add('open');
+  notesDrawer.classList.add('open');
+}
+function closeNotesDrawer() {
+  drawerOverlay.classList.remove('open');
+  notesDrawer.classList.remove('open');
+}
+drawerCloseBtn.addEventListener('click', closeNotesDrawer);
+drawerOverlay.addEventListener('click', closeNotesDrawer);
+
+function openNoteModal(id) {
   editingId = id || null;
   if (id) {
     const note = notes.find(n => n.id === id);
@@ -605,16 +1058,21 @@ function openModal(id) {
   modalOverlay.classList.add('open');
   setTimeout(() => noteTitleInput.focus(), 50);
 }
-function closeModal() { modalOverlay.classList.remove('open'); editingId = null; }
+function closeNoteModal() { modalOverlay.classList.remove('open'); editingId = null; }
 
-addNoteBtn.addEventListener('click', () => openModal(null));
-cancelModalBtn.addEventListener('click', closeModal);
-modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+addNoteBtn.addEventListener('click', () => openNoteModal(null));
+cancelModalBtn.addEventListener('click', closeNoteModal);
+modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeNoteModal(); });
 
 saveNoteBtn.addEventListener('click', async () => {
   const title = noteTitleInput.value.trim();
   const content = noteContentInput.value.trim();
-  if (!title) { noteTitleInput.focus(); noteTitleInput.style.borderColor = '#ef4444'; setTimeout(() => noteTitleInput.style.borderColor = '', 1500); return; }
+  if (!title) {
+    noteTitleInput.focus();
+    noteTitleInput.style.borderColor = '#ef4444';
+    setTimeout(() => noteTitleInput.style.borderColor = '', 1500);
+    return;
+  }
   saveNoteBtn.disabled = true;
   saveNoteBtn.textContent = 'Kaydediliyor…';
   try {
@@ -623,7 +1081,7 @@ saveNoteBtn.addEventListener('click', async () => {
     } else {
       await addDoc(collection(db, 'notes'), { title, content, createdAt: serverTimestamp() });
     }
-    closeModal();
+    closeNoteModal();
   } catch (e) {
     alert('Kaydedilemedi: ' + e.message);
   }
@@ -631,12 +1089,42 @@ saveNoteBtn.addEventListener('click', async () => {
   saveNoteBtn.textContent = 'Kaydet';
 });
 
-// ---- Yardımcı ----
-function esc(str) {
-  const d = document.createElement('div');
-  d.textContent = str || '';
-  return d.innerHTML;
+// ==================== FIRESTORE: ADMIN METİNLERİ ====================
+function startListeningAdminTexts() {
+  unsubscribeAdmin = onSnapshot(collection(db, 'adminTexts'), (snapshot) => {
+    adminTexts = {};
+    snapshot.docs.forEach(d => { adminTexts[d.id] = (d.data().text || ''); });
+    renderUmreButtons();
+    renderDahilExtraButtons();
+  }, (err) => {
+    console.error('adminTexts yüklenemedi:', err.message);
+  });
 }
+
+function openAdminModal(key, label, currentText) {
+  adminEditingKey = key;
+  adminModalTitle.textContent = label + ' — Metni Düzenle';
+  adminTextInput.value = currentText || '';
+  adminModalOverlay.classList.add('open');
+  setTimeout(() => adminTextInput.focus(), 50);
+}
+function closeAdminModal() { adminModalOverlay.classList.remove('open'); adminEditingKey = null; }
+adminCancelBtn.addEventListener('click', closeAdminModal);
+adminModalOverlay.addEventListener('click', (e) => { if (e.target === adminModalOverlay) closeAdminModal(); });
+
+adminSaveBtn.addEventListener('click', async () => {
+  if (!adminEditingKey) return;
+  adminSaveBtn.disabled = true;
+  adminSaveBtn.textContent = 'Kaydediliyor…';
+  try {
+    await setDoc(doc(db, 'adminTexts', adminEditingKey), { text: adminTextInput.value });
+    closeAdminModal();
+  } catch (e) {
+    alert('Kaydedilemedi: ' + e.message);
+  }
+  adminSaveBtn.disabled = false;
+  adminSaveBtn.textContent = 'Kaydet';
+});
 </script>
 </body>
 </html>
