@@ -36,7 +36,7 @@
           <span class="toggle-pill" id="adminTogglePill"></span>
         </div>
        <div class="menu-item" id="notesMenuItem">
-          <span>📒 Notlar</span>
+          <span>📒 Vize Bilgisi</span>
           <span>›</span>
         </div>
         <div class="menu-item" id="sectionsMenuItem">
@@ -147,18 +147,20 @@
   </div>
 </div>
 
-<!-- Notlar Drawer -->
-<div class="drawer-overlay" id="drawerOverlay"></div>
-<div class="drawer" id="notesDrawer">
-  <div class="drawer-header">
-    <h3>📒 Notlar</h3>
-    <button class="drawer-close" id="drawerCloseBtn">✕</button>
-  </div>
-  <div class="drawer-body">
+<!-- Vize Bilgisi Modal -->
+<div class="modal-overlay" id="notesModalOverlay">
+  <div class="modal" style="max-width:600px;max-height:85vh;overflow-y:auto;">
+    <div class="drawer-header" style="padding:0 0 12px;border-bottom:1px solid #e5e7eb;margin-bottom:12px;">
+      <h3 style="margin:0;">📒 Vize Bilgisi</h3>
+      <button class="drawer-close" id="notesCloseBtn">✕</button>
+    </div>
+    <div class="field">
+      <input type="text" id="noteSearchInput" placeholder="Başlığa göre ara...">
+    </div>
     <div id="notesList"><div class="loading-notes">Yükleniyor…</div></div>
-  </div>
-  <div class="drawer-add">
-    <button id="addNoteBtn">+ Not Ekle</button>
+    <div class="modal-actions" style="margin-top:14px;">
+      <button class="save-btn" id="addNoteBtn">+ Not Ekle</button>
+    </div>
   </div>
 </div>
 
@@ -171,8 +173,13 @@
       <input type="text" id="noteTitleInput" placeholder="Not başlığı">
     </div>
     <div class="field">
-      <label for="noteContentInput">İçerik</label>
-      <textarea id="noteContentInput" placeholder="Not içeriği"></textarea>
+      <label>Vize Tipi *</label>
+      <div class="btn-row">
+        <button type="button" class="action-btn visa-type-btn" data-content="Vizesiz">Vizesiz</button>
+        <button type="button" class="action-btn visa-type-btn" data-content="Kapı Vizesi">Kapı Vizesi</button>
+        <button type="button" class="action-btn visa-type-btn" data-content="Schengen Vizesi">Schengen Vizesi</button>
+      </div>
+      <input type="hidden" id="noteContentInput">
     </div>
     <div class="modal-actions">
       <button class="cancel-btn" id="cancelModalBtn">İptal</button>
@@ -248,4 +255,3 @@
 <script type="module" src="script.js"></script>
 </body>
 </html>
-
