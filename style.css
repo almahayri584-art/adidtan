@@ -220,3 +220,7 @@
   .edit-btn:hover { background: #f59e0b; }
   .delete-btn { background: #ef4444; color: #fff; }
   .delete-btn:hover { background: #dc2626; }
+.visa-type-btn.selected { background: #10b981; }
+.visa-type-btn.selected:hover { background: #059669; }
+.note-copy-btn { margin-right: 6px; }
+#noteSearchInput { margin-bottom: 10px; }
