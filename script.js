@@ -71,11 +71,11 @@ const dahilExtraRow = document.getElementById('dahilExtraRow');
 
 const programDays = document.getElementById('programDays');
 
-const drawerOverlay = document.getElementById('drawerOverlay');
-const notesDrawer = document.getElementById('notesDrawer');
-const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+const notesModalOverlay = document.getElementById('notesModalOverlay');
+const notesCloseBtn = document.getElementById('notesCloseBtn');
 const addNoteBtn = document.getElementById('addNoteBtn');
 const notesList = document.getElementById('notesList');
+const noteSearchInput = document.getElementById('noteSearchInput');
 
 const modalOverlay = document.getElementById('modalOverlay');
 const modalTitle = document.getElementById('modalTitle');
@@ -216,7 +216,7 @@ adminToggleItem.addEventListener('click', () => {
 });
 notesMenuItem.addEventListener('click', () => {
   menuDropdown.classList.remove('open');
-  openNotesDrawer();
+  openNotesModal();
 });
 sectionsMenuItem.addEventListener('click', () => {
   menuDropdown.classList.remove('open');
@@ -709,26 +709,23 @@ function startListeningNotes() {
 
 function renderNotesList() {
   notesList.innerHTML = '';
-  if (!notes.length) {
-    notesList.innerHTML = '<div class="empty">Henüz not eklenmedi.</div>';
+  const searchTerm = (noteSearchInput.value || '').toLocaleLowerCase('tr-TR').trim();
+  let filtered = notes.filter(n => (n.title || '').toLocaleLowerCase('tr-TR').includes(searchTerm));
+  filtered = filtered.slice().sort((a, b) => (a.title || '').localeCompare(b.title || '', 'tr-TR'));
+
+  if (!filtered.length) {
+    notesList.innerHTML = '<div class="empty">Not bulunamadı.</div>';
     return;
   }
-  notes.forEach(note => {
-    const ts = note.createdAt?.toDate?.();
-    const dateStr = ts ? ts.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
+  filtered.forEach(note => {
     const item = document.createElement('div');
     item.className = 'note-item';
     item.innerHTML = `
-      <div class="note-header" data-id="${note.id}">
-        <div class="note-header-left">
-          <span class="title">${escHtml(note.title)}</span>
-          ${dateStr ? `<span class="note-meta">${dateStr}</span>` : ''}
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="note-body" id="body-${note.id}">
+      <div class="note-body open">
+        <span class="title">${escHtml(note.title)}</span>
         <p>${escHtml(note.content || '')}</p>
         <div class="note-actions">
+          <button class="action-btn note-copy-btn" data-id="${note.id}">Kopyala</button>
           <button class="edit-btn" data-id="${note.id}">Düzenle</button>
           <button class="delete-btn" data-id="${note.id}">Sil</button>
         </div>
@@ -736,21 +733,17 @@ function renderNotesList() {
     notesList.appendChild(item);
   });
 
-  notesList.querySelectorAll('.note-header').forEach(h => {
-    h.addEventListener('click', () => {
-      const body = document.getElementById('body-' + h.dataset.id);
-      const arrow = h.querySelector('.arrow');
-      const isOpen = body.classList.contains('open');
-      body.classList.toggle('open', !isOpen);
-      arrow.style.transform = !isOpen ? 'rotate(180deg)' : '';
+  notesList.querySelectorAll('.note-copy-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      const note = notes.find(n => n.id === b.dataset.id);
+      copyPlain(note?.content || '', b);
     });
   });
   notesList.querySelectorAll('.edit-btn').forEach(b => {
-    b.addEventListener('click', (e) => { e.stopPropagation(); openNoteModal(b.dataset.id); });
+    b.addEventListener('click', () => openNoteModal(b.dataset.id));
   });
   notesList.querySelectorAll('.delete-btn').forEach(b => {
-    b.addEventListener('click', (e) => {
-      e.stopPropagation();
+    b.addEventListener('click', () => {
       pendingDeleteId = b.dataset.id;
       confirmOverlay.classList.add('open');
     });
@@ -769,16 +762,16 @@ confirmNo.addEventListener('click', () => {
   pendingDeleteId = null;
 });
 
-function openNotesDrawer() {
-  drawerOverlay.classList.add('open');
-  notesDrawer.classList.add('open');
+function openNotesModal() {
+  notesModalOverlay.classList.add('open');
+  renderNotesList();
 }
-function closeNotesDrawer() {
-  drawerOverlay.classList.remove('open');
-  notesDrawer.classList.remove('open');
+function closeNotesModal() {
+  notesModalOverlay.classList.remove('open');
 }
-drawerCloseBtn.addEventListener('click', closeNotesDrawer);
-drawerOverlay.addEventListener('click', closeNotesDrawer);
+notesCloseBtn.addEventListener('click', closeNotesModal);
+notesModalOverlay.addEventListener('click', (e) => { if (e.target === notesModalOverlay) closeNotesModal(); });
+noteSearchInput.addEventListener('input', renderNotesList);
 
 function openNoteModal(id) {
   editingId = id || null;
@@ -792,6 +785,9 @@ function openNoteModal(id) {
     noteTitleInput.value = '';
     noteContentInput.value = '';
   }
+  document.querySelectorAll('.visa-type-btn').forEach(btn => {
+    btn.classList.toggle('selected', btn.dataset.content === noteContentInput.value);
+  });
   modalOverlay.classList.add('open');
   setTimeout(() => noteTitleInput.focus(), 50);
 }
@@ -801,6 +797,14 @@ addNoteBtn.addEventListener('click', () => openNoteModal(null));
 cancelModalBtn.addEventListener('click', closeNoteModal);
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeNoteModal(); });
 
+document.querySelectorAll('.visa-type-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    noteContentInput.value = btn.dataset.content;
+    document.querySelectorAll('.visa-type-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  });
+});
+
 saveNoteBtn.addEventListener('click', async () => {
   const title = noteTitleInput.value.trim();
   const content = noteContentInput.value.trim();
@@ -808,6 +812,10 @@ saveNoteBtn.addEventListener('click', async () => {
     noteTitleInput.focus();
     noteTitleInput.style.borderColor = '#ef4444';
     setTimeout(() => noteTitleInput.style.borderColor = '', 1500);
+    return;
+  }
+  if (!content) {
+    alert('Lütfen bir vize tipi seçin.');
     return;
   }
   saveNoteBtn.disabled = true;
